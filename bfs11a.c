@@ -1,103 +1,76 @@
-#include <stdio.h>
-#include <stdlib.h>
-
-#define MAX 10
-
-int adj[MAX][MAX];     // adjacency matrix
-int visited[MAX];      // visited array
-int queue[MAX];
-int front = -1, rear = -1;
-int V;                 // number of vertices
-
-// Insert element in queue
-void enqueue(int x) {
-    if (front == -1)
-        front = 0;
-    queue[++rear] = x;
+#include<stdio.h>
+#include<stdlib.h>
+struct node{
+    int vertex;
+    struct node *next;
+};
+struct node *arr[10];
+int visited[10];
+int queue[10];
+int start = -1,end = -1;
+void createVertex(int v){
+    arr[v] = NULL;
+    printf("\nVertex %d created",v);
 }
+void createEdge(int s,int d){
+    struct node *p = (struct node *)malloc(sizeof(struct node));
+    p->vertex = d;
+    p->next = arr[s];
+    arr[s] = p;
 
-// Remove element from queue
-int dequeue() {
-    if (front == -1)
-        return -1;
-
-    int val = queue[front];
-
-    if (front == rear)
-        front = rear = -1;
-    else
-        front++;
-
-    return val;
+    struct node *q = (struct node *)malloc(sizeof(struct node));
+    q->vertex = s;
+    q->next = arr[d];
+    arr[d] = q;
+    printf("\nEdge create between %d and %d ",s,d);
 }
-
-// Create graph using adjacency matrix
-void createGraph(int vertices) {
-    V = vertices;
-    for (int i = 0; i < V; i++) {
-        for (int j = 0; j < V; j++) {
-            adj[i][j] = 0;
-        }
+void enqueue(int val){
+    if(end == -1){
+        start = 0,end = 0;
     }
+    else{
+        end++;
+    }
+    queue[end] = val;
+}
+int dequeue(){
+    int el = queue[start];
+    if(start == end){
+        start = -1, end  = -1;
+    }
+    else{
+        start++;
+    }
+    return el;
 }
 
-// Add edge (undirected graph)
-void addEdge(int u, int v) {
-    adj[u][v] = 1;
-    adj[v][u] = 1;
-
-    printf("Edge created between %d and %d\n", u, v);
-}
-
-// BFS Function
-void bfs(int start) {
-    for (int i = 0; i < V; i++)
-        visited[i] = 0;
-
-    printf("\nBFS Traversal: ");
-
-    visited[start] = 1;
-    enqueue(start);
-
-    while (front != -1) {
-        int node = dequeue();
-        printf("%d ", node);
-
-        // visit all neighbors
-        for (int j = 0; j < V; j++) {
-            if (adj[node][j] == 1 && !visited[j]) {
-                visited[j] = 1;
-                enqueue(j);
+void bfs(int s){
+    start = -1,end = -1;
+    for(int i=0;i<11;i++) visited[i] = 0;
+    visited[s] = 1;
+    enqueue(s);
+    printf("\nBFS traversal ");
+    while(start != -1){
+        int v = dequeue();
+        printf("%d ",v);
+        struct node *p = arr[v];
+        while(p != NULL){
+            if(!visited[p->vertex]){
+                visited[p->vertex] = 1;
+                enqueue(p->vertex);
             }
+            p=p->next;
         }
     }
-
-    printf("\n");
 }
-
-// Display adjacency matrix
-void displayMatrix() {
-    printf("\nAdjacency Matrix:\n");
-    for (int i = 0; i < V; i++) {
-        for (int j = 0; j < V; j++) {
-            printf("%d ", adj[i][j]);
-        }
-        printf("\n");
+int main(){
+    for(int i=1;i<5;i++){
+        createVertex(i);
     }
-}
-
-int main() {
-
-    createGraph(5);
-
-    addEdge(0, 1);
-    addEdge(1, 2);
-    addEdge(1, 3);
-    addEdge(0, 4);
-
-    displayMatrix();
-
-    bfs(0);
-
+    createEdge(1,2);
+    createEdge(2,4);
+    createEdge(3,2);
+    createEdge(1,4);
+    bfs(1);
     return 0;
 }

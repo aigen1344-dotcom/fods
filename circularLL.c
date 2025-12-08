@@ -134,13 +134,13 @@ int main(){
                 scanf("%d", &data);
                 printf("Enter the position: ");
                 scanf("%d", &pos);
-                insertAtAnyPos(data, pos);
+                insertAtPos(data, pos);
                 display();
                 break;
             case 3:
                 printf("Enter the position: ");
                 scanf("%d", &pos);
-                deleteFromAnyPos(pos);
+                deletePos(pos);
                 display();
                 break;
             case 4:
